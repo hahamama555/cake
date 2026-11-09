@@ -1,1 +1,55 @@
-# cake
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>みんなで巨大ケーキを作ろう！</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;color:#503b35;background:#f6e9ee}
+body{min-height:100dvh;display:flex;justify-content:center;align-items:center;padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}
+#app{container-type:size;aspect-ratio:3/5;height:min(calc(100dvh - 12px),calc((100vw - 12px)*5/3));display:flex;flex-direction:column;gap:1.2cqw;padding:2.2cqw;background:linear-gradient(135deg,#fff1f5,#fff8e9);border-radius:14px;overflow:hidden}
+header{display:flex;justify-content:space-between;align-items:center;gap:2cqw;flex:none}
+h1{font-size:4.3cqw;margin:0;color:#a84d70;line-height:1.15}
+.subtitle{font-size:2.5cqw;font-weight:700}
+.totalbox{background:#fff;border:.5cqw solid #ffd0df;border-radius:3cqw;padding:1cqw 2.5cqw;text-align:center}
+.total{font-size:6cqw;font-weight:900;color:#d94f83;line-height:1.05}
+.totalbox small{font-size:2.2cqw}
+.progress{height:2cqw;background:#f4dce4;border-radius:2cqw;overflow:hidden;flex:none}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#ff9bb9,#f6bd63);transition:width .35s}
+main{flex:1;min-height:0;display:flex;flex-direction:column;gap:1.2cqw}
+.materials{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1cqw}
+.material{background:rgba(255,255,255,.88);border:.5cqw solid #f5d5df;border-radius:3cqw;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;padding:1.2cqw .6cqw;gap:.8cqw;overflow:hidden}
+.material h2{font-size:2.7cqw;margin:0;white-space:nowrap}
+.pile{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(to top,#fff0f5 0%,#fffafc 75%);border-radius:2.5cqw}
+.stack{width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-end;align-items:flex-end;justify-content:center;gap:.1cqw;padding:1.5cqw .3cqw}
+.stack-item{width:2.9cqw;height:2.9cqw;font-size:2.5cqw;line-height:1;display:inline-flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 1px #61423a22)}
+.stack-item.pop-once{animation:stackIn .32s ease both}
+@keyframes stackIn{from{transform:translateY(3cqw) scale(.55);opacity:.25}to{transform:none;opacity:1}}
+.pilecount{position:absolute;bottom:.6cqw;right:.6cqw;z-index:2;background:#fff0f5;border:1px solid #f5c6d5;border-radius:2cqw;padding:.2cqw 1.2cqw;font-weight:800;font-size:2.6cqw}
+.material.bump .pile{animation:pileFlash .38s ease}
+@keyframes pileFlash{50%{background:#ffe0eb;transform:scale(1.025)}}
+.count{font-size:4.2cqw;font-weight:900;color:#b54f72;line-height:1}
+button{font:inherit;cursor:pointer}
+button:active{transform:scale(.96)}
+.material button{font-size:2.5cqw;padding:0 .8cqw;height:6.5cqw;border:0;border-radius:2cqw;background:#ffe0e9;color:#8e3e5c;font-weight:800;white-space:nowrap}
+.side{display:flex;flex-direction:column;gap:1.2cqw;flex:none}
+.panel{background:#fff;border:.3cqw solid #f1d8df;border-radius:2.5cqw;padding:1.5cqw}
+.panel h3{font-size:3cqw;margin:0 0 1cqw;color:#a84d70}
+.gifts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1cqw}
+.gifts button{font-size:2.4cqw;line-height:1.2;padding:.8cqw .3cqw;height:9cqw;border:.3cqw solid #f0cbd7;border-radius:2cqw;background:#fff7fa;color:#67434e;font-weight:700}
+.gifts span{display:block;font-size:.9em;color:#c04e78}
+.note{display:none}
+.statusrow{display:flex;align-items:center;gap:1.5cqw}
+.status{flex:1;text-align:center;font-weight:800;font-size:3.2cqw;color:#a84d70}
+.reset{height:7cqw;padding:0 3cqw;font-size:2.6cqw;border:.3cqw solid #f0cbd7;border-radius:2cqw;background:#f8f1ed;color:#67434e;font-weight:700}
+footer{flex:none;text-align:center;font-size:2.1cqw;font-weight:700;color:#92777a}
+#done{position:absolute;inset:0;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,248,237,.94);border-radius:3cqw;overflow:hidden;text-align:center}
+#done.show{display:flex}
+#done .cake{font-size:42cqw;line-height:1;animation:cakePop .9s cubic-bezier(.2,1.4,.4,1) both,cakeBob 2s ease-in-out .9s infinite}
+@keyframes cakePop{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
+@keyframes cakeBob{50%{transform:translateY(-2cqw) scale(1.04)}}
+#done .doneText{font-size:6.4cqw;font-weight:900;color:#d94f83;margin-top:2cqw}
+#done .doneSub{font-size:3.6cqw;font-weight:800;color:#a84d70;margin-top:1cqw}
+.confetti{
+
