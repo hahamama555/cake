@@ -39,7 +39,6 @@ button:active{transform:scale(.96)}
 .gifts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1cqw}
 .gifts button{font-size:2.4cqw;line-height:1.2;padding:.8cqw .3cqw;height:9cqw;border:.3cqw solid #f0cbd7;border-radius:2cqw;background:#fff7fa;color:#67434e;font-weight:700}
 .gifts span{display:block;font-size:.9em;color:#c04e78}
-.note{display:none}
 .statusrow{display:flex;align-items:center;gap:1.5cqw}
 .status{flex:1;text-align:center;font-weight:800;font-size:3.2cqw;color:#a84d70}
 .reset{height:7cqw;padding:0 3cqw;font-size:2.6cqw;border:.3cqw solid #f0cbd7;border-radius:2cqw;background:#f8f1ed;color:#67434e;font-weight:700}
@@ -64,12 +63,12 @@ footer{flex:none;text-align:center;font-size:2.1cqw;font-weight:700;color:#92777
 <div class="progress"><div id="bar"></div></div>
 <main>
  <section class="materials" id="materials">
-  <article class="material" data-key="egg"><h2>🥚 たまご</h2><div class="pile"><div class="stack" aria-label="たまごのたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('egg')">＋ たまご</button></article>
-  <article class="material" data-key="flour"><h2>🌾 小麦粉</h2><div class="pile"><div class="stack" aria-label="小麦粉のたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('flour')">＋ 小麦粉</button></article>
-  <article class="material" data-key="milk"><h2>🥛 牛乳</h2><div class="pile"><div class="stack" aria-label="牛乳のたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('milk')">＋ 牛乳</button></article>
-  <article class="material" data-key="sugar"><h2>🍬 砂糖</h2><div class="pile"><div class="stack" aria-label="砂糖のたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('sugar')">＋ 砂糖</button></article>
-  <article class="material" data-key="butter"><h2>🧈 バター</h2><div class="pile"><div class="stack" aria-label="バターのたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('butter')">＋ バター</button></article>
- <div id="done"><div class="cake">🎂</div><div class="doneText">巨大ケーキ完成！</div><div class="doneSub">みんなありがとう！ケーキ作りスタート！</div></div>
+  <article class="material" data-key="egg"><h2>🥚 たまご</h2><div class="pile"><div class="stack"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('egg')">＋ たまご</button></article>
+  <article class="material" data-key="flour"><h2>🌾 小麦粉</h2><div class="pile"><div class="stack"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('flour')">＋ 小麦粉</button></article>
+  <article class="material" data-key="milk"><h2>🥛 牛乳</h2><div class="pile"><div class="stack"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('milk')">＋ 牛乳</button></article>
+  <article class="material" data-key="sugar"><h2>🍬 砂糖</h2><div class="pile"><div class="stack"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('sugar')">＋ 砂糖</button></article>
+  <article class="material" data-key="butter"><h2>🧈 バター</h2><div class="pile"><div class="stack"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('butter')">＋ バター</button></article>
+  <div id="done"><div class="cake">🎂</div><div class="doneText">巨大ケーキ完成！</div><div class="doneSub">みんなありがとう！ケーキ作りスタート！</div></div>
  </section>
  <aside class="side">
   <section class="panel"><h3>🎁 ギフトお礼ボタン</h3><div class="gifts">
@@ -81,7 +80,7 @@ footer{flex:none;text-align:center;font-size:2.1cqw;font-weight:700;color:#92777
    <button onclick="gift(-30)">🤝 団結<span>材料 −30</span></button>
    <button onclick="gift(50)">💸 マネーガン<span>材料 ＋50</span></button>
    <button onclick="gift(-50)">✨ すばらしい<span>材料 −50</span></button>
-  </div><div class="note">ギフトの増減は5種類の材料に自動で振り分けます。</div></section>
+  </div></section>
   <section class="panel statusrow"><div class="status" id="status">あと300個！みんなで集めよう！</div><button class="reset" onclick="resetAll()">↻ リセット</button></section>
  </aside>
 </main>
@@ -90,7 +89,6 @@ footer{flex:none;text-align:center;font-size:2.1cqw;font-weight:700;color:#92777
 <script>
 const keys=['egg','flour','milk','sugar','butter'];
 const counts={egg:0,flour:0,milk:0,sugar:0,butter:0};
-const names={egg:'たまご',flour:'小麦粉',milk:'牛乳',sugar:'砂糖',butter:'バター'};
 const emojis={egg:'🥚',flour:'🌾',milk:'🥛',sugar:'🍬',butter:'🧈'};
 const goal=300;
 function total(){return keys.reduce((s,k)=>s+counts[k],0)}
@@ -99,16 +97,12 @@ function render(bumpKey=null){
   const el=document.querySelector(`[data-key="${k}"]`);
   el.querySelector('.count').textContent=counts[k]+'個';
   el.querySelector('.pilecount span').textContent=counts[k];
-  // 1回の材料ボタン操作につき、材料アイコンを1つ追加。
-  // 表示は最大100個にして、増えた瞬間の1個だけをアニメーション。
   const stack=el.querySelector('.stack');
   const icons=Math.min(100,counts[k]);
-  const first=Math.max(0,counts[k]-100);
   stack.innerHTML=Array.from({length:icons},(_,i)=>{
-    const isNew = bumpKey===k && i===icons-1;
+    const isNew=bumpKey===k&&i===icons-1;
     return `<span class="stack-item${isNew?' pop-once':''}">${emojis[k]}</span>`;
   }).join('');
-  stack.style.setProperty('--fill',Math.min(100,counts[k]/60*100)+'%');
   el.classList.remove('bump');
   if(bumpKey===k){void el.offsetWidth;el.classList.add('bump')}
  });
@@ -121,9 +115,9 @@ function render(bumpKey=null){
 function addMaterial(k){counts[k]++;render(k)}
 function distribute(amount){
  if(amount>0){
-  for(let i=0;i<amount;i++){let min=Math.min(...keys.map(k=>counts[k]));let candidates=keys.filter(k=>counts[k]===min);counts[candidates[Math.floor(Math.random()*candidates.length)]]++}
+  for(let i=0;i<amount;i++){let min=Math.min(...keys.map(k=>counts[k]));let c=keys.filter(k=>counts[k]===min);counts[c[Math.floor(Math.random()*c.length)]]++}
  }else{
-  for(let i=0;i<Math.abs(amount);i++){let max=Math.max(...keys.map(k=>counts[k]));if(max<=0)break;let candidates=keys.filter(k=>counts[k]===max);counts[candidates[Math.floor(Math.random()*candidates.length)]]--}
+  for(let i=0;i<Math.abs(amount);i++){let max=Math.max(...keys.map(k=>counts[k]));if(max<=0)break;let c=keys.filter(k=>counts[k]===max);counts[c[Math.floor(Math.random()*c.length)]]--}
  }
 }
 function gift(n){distribute(n);render()}
