@@ -51,5 +51,87 @@ footer{flex:none;text-align:center;font-size:2.1cqw;font-weight:700;color:#92777
 @keyframes cakeBob{50%{transform:translateY(-2cqw) scale(1.04)}}
 #done .doneText{font-size:6.4cqw;font-weight:900;color:#d94f83;margin-top:2cqw}
 #done .doneSub{font-size:3.6cqw;font-weight:800;color:#a84d70;margin-top:1cqw}
-.confetti{
-
+.confetti{position:absolute;top:-8cqw;font-size:5cqw;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(120cqh) rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div><h1>🎂 みんなで巨大ケーキを作ろう！</h1><div class="subtitle">材料名をコメントしてね！</div></div>
+ <div class="totalbox"><div class="total" id="total">0 / 300</div><small>材料あつめ</small></div>
+</header>
+<div class="progress"><div id="bar"></div></div>
+<main>
+ <section class="materials" id="materials">
+  <article class="material" data-key="egg"><h2>🥚 たまご</h2><div class="pile"><div class="stack" aria-label="たまごのたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('egg')">＋ たまご</button></article>
+  <article class="material" data-key="flour"><h2>🌾 小麦粉</h2><div class="pile"><div class="stack" aria-label="小麦粉のたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('flour')">＋ 小麦粉</button></article>
+  <article class="material" data-key="milk"><h2>🥛 牛乳</h2><div class="pile"><div class="stack" aria-label="牛乳のたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('milk')">＋ 牛乳</button></article>
+  <article class="material" data-key="sugar"><h2>🍬 砂糖</h2><div class="pile"><div class="stack" aria-label="砂糖のたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('sugar')">＋ 砂糖</button></article>
+  <article class="material" data-key="butter"><h2>🧈 バター</h2><div class="pile"><div class="stack" aria-label="バターのたまり具合"></div><div class="pilecount">×<span>0</span></div></div><div class="count">0個</div><button onclick="addMaterial('butter')">＋ バター</button></article>
+ <div id="done"><div class="cake">🎂</div><div class="doneText">巨大ケーキ完成！</div><div class="doneSub">みんなありがとう！ケーキ作りスタート！</div></div>
+ </section>
+ <aside class="side">
+  <section class="panel"><h3>🎁 ギフトお礼ボタン</h3><div class="gifts">
+   <button onclick="gift(1)">💗 ハートミー<span>材料 ＋1</span></button>
+   <button onclick="gift(3)">🍩 ドーナツ<span>材料 ＋3</span></button>
+   <button onclick="gift(10)">🫶 ハートポーズ<span>材料 ＋10</span></button>
+   <button onclick="gift(-10)">🍄 歌うきのこ<span>材料 −10</span></button>
+   <button onclick="gift(30)">🐶 コーギー<span>材料 ＋30</span></button>
+   <button onclick="gift(-30)">🤝 団結<span>材料 −30</span></button>
+   <button onclick="gift(50)">💸 マネーガン<span>材料 ＋50</span></button>
+   <button onclick="gift(-50)">✨ すばらしい<span>材料 −50</span></button>
+  </div><div class="note">ギフトの増減は5種類の材料に自動で振り分けます。</div></section>
+  <section class="panel statusrow"><div class="status" id="status">あと300個！みんなで集めよう！</div><button class="reset" onclick="resetAll()">↻ リセット</button></section>
+ </aside>
+</main>
+<footer>材料ボタン：コメントを見て手動でタップ ／ 目標は5種類合計300個</footer>
+</div>
+<script>
+const keys=['egg','flour','milk','sugar','butter'];
+const counts={egg:0,flour:0,milk:0,sugar:0,butter:0};
+const names={egg:'たまご',flour:'小麦粉',milk:'牛乳',sugar:'砂糖',butter:'バター'};
+const emojis={egg:'🥚',flour:'🌾',milk:'🥛',sugar:'🍬',butter:'🧈'};
+const goal=300;
+function total(){return keys.reduce((s,k)=>s+counts[k],0)}
+function render(bumpKey=null){
+ keys.forEach(k=>{
+  const el=document.querySelector(`[data-key="${k}"]`);
+  el.querySelector('.count').textContent=counts[k]+'個';
+  el.querySelector('.pilecount span').textContent=counts[k];
+  // 1回の材料ボタン操作につき、材料アイコンを1つ追加。
+  // 表示は最大100個にして、増えた瞬間の1個だけをアニメーション。
+  const stack=el.querySelector('.stack');
+  const icons=Math.min(100,counts[k]);
+  const first=Math.max(0,counts[k]-100);
+  stack.innerHTML=Array.from({length:icons},(_,i)=>{
+    const isNew = bumpKey===k && i===icons-1;
+    return `<span class="stack-item${isNew?' pop-once':''}">${emojis[k]}</span>`;
+  }).join('');
+  stack.style.setProperty('--fill',Math.min(100,counts[k]/60*100)+'%');
+  el.classList.remove('bump');
+  if(bumpKey===k){void el.offsetWidth;el.classList.add('bump')}
+ });
+ const t=total(),pct=Math.min(100,t/goal*100);
+ document.getElementById('total').textContent=`${t} / ${goal}`;
+ document.getElementById('bar').style.width=pct+'%';
+ document.getElementById('done').classList.toggle('show',t>=goal);
+ document.getElementById('status').textContent=t>=goal?'🎉 材料300個達成！ケーキ作りスタート！':`あと${goal-t}個！みんなで集めよう！`;
+}
+function addMaterial(k){counts[k]++;render(k)}
+function distribute(amount){
+ if(amount>0){
+  for(let i=0;i<amount;i++){let min=Math.min(...keys.map(k=>counts[k]));let candidates=keys.filter(k=>counts[k]===min);counts[candidates[Math.floor(Math.random()*candidates.length)]]++}
+ }else{
+  for(let i=0;i<Math.abs(amount);i++){let max=Math.max(...keys.map(k=>counts[k]));if(max<=0)break;let candidates=keys.filter(k=>counts[k]===max);counts[candidates[Math.floor(Math.random()*candidates.length)]]--}
+ }
+}
+function gift(n){distribute(n);render()}
+function resetAll(){keys.forEach(k=>counts[k]=0);render()}
+(function(){const d=document.getElementById('done'),em=['🍓','✨','🎉','🍰','🎂','💗'];
+ for(let i=0;i<14;i++){const c=document.createElement('span');c.className='confetti';c.textContent=em[i%em.length];
+  c.style.left=(Math.random()*92)+'%';c.style.animationDuration=(3+Math.random()*3).toFixed(1)+'s';c.style.animationDelay=(-Math.random()*5).toFixed(1)+'s';d.appendChild(c)}})();
+render();
+</script>
+</body>
+</html>
